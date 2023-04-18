@@ -1,0 +1,17 @@
+---
+description: A Service Discovery Mechanism
+---
+
+# Paymail
+
+Paymail is a [TSC standard](https://tsc.bitcoinassociation.net/standards/paymail/) for BitcoinSV related web API service discovery. In brief, it removes Bitcoin addresses from the user experience, replacing them with human-readable aliases which look exactly the same as email addresses. Paymails are much easier to type into a device than Bitcoin addresses and can be used to identify an individual via the Paymail identifier. For more information on Paymail, please visit the [Bitcoin Wiki](https://wiki.bitcoinsv.io/index.php/Paymail).
+
+A Paymail server is designed to act very similarly to a DNS server. Similarly, its primary role is to function as a resolver during the service discovery phase. Basically, if you have not "discovered" the correct service endpoint, then you would hit the Paymail server which would point you to the right endpoint the same way a DNS server resolves a domain name and points you to the right IP address. Using a Paymail server allows you to dynamically change your service endpoints without affecting functionality or breaking anything. The same way you can change the IP address of your website and DNS will handle the service discovery, Paymail handles the discovery of the Paymail capabilities you offer.
+
+A Paymail server is a very lean and modular service. It is not an integral part of wallet infrastructure, but instead can be thought of as an extension layer on top that functions to enhance the user experience. It can be peeled on/off but if it is not available, then things should still be able to function at a lower level without it. In fact, in cases where service discovery has already been reached, through a QR code or an NFC connection for instance, Paymail is not required since the communication process is already past service discovery. In other words, if a sender wants to send a payment and they already have direct access to the receiver somehow, by scanning a QR code on their phone for example, then the scanning _was_ the service discovery. The payment can proceed directly between the sender and receiver thereafter.
+
+Earlier Paymail server implementations were too integrated into the Bitcoin wallet which unfortunately caused some confusion around the function of a Paymail server. This also hindered adoption because many wallet developers wrote their own Paymail integration code as part of their wallet code instead of just adding a Paymail server into their system as a simple modular component or layer that can easily be added.&#x20;
+
+Another point of confusion arose around the key management process that should be used with Paymail. For example, one developer asked if another key management algorithm other than BIP32 (link) can be used with Paymail. When the Paymail server is seen as just a resolver like a DNS server, then it is clearer that Paymail is not involved in the key management process and is separate from lower level wallet functionality. Since Paymail is just a service discovery layer then it does not dictate what key management process should be used, which is all done at lower layers in the Bitcoin wallet functionality.
+
+Bitcoin wallets such as Handcash and MoneyButton implement a server-to-server Paymail capability with brfcids 2a40af698840 and 5f1323cddf31 which are a step away from standard bitcoin address use, towards proper SPV. This server will act as a bridge between the old and new, by translating between that legacy protocol and the full SPV direct payment protocol.
